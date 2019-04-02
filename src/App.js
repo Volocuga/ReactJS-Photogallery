@@ -1,25 +1,55 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import v4 from "uuid/v4";
+
+import Header from "./components/Header";
+import Profile from "./components/Profile";
+import UserForm from "./components/UserForm";
+import ListUsersData from "./components/ListUsersData";
+import Test from './components/Test';
+import GroupForm from './components/GroupForm';
+
+import profiles from "./object/profile";
+
+import "./App.css";
 
 class App extends Component {
+  state = {
+    userData: [{ login: "", password: "" }]
+  };
+  _addUserData = usersData => {
+    const newUserData = {
+      id: v4(),
+      ...usersData
+    };
+    this.setState({
+      userData: [...this.state.userData, newUserData]
+    });
+  };
+  deleteItem = id => {
+    this.setState({
+      userData: this.state.userData.filter(userData => userData.id !== id)
+    });
+  };
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+        <Header />
+        <Test />
+        <hr/>
+        <GroupForm />
+        <hr/>
+        <UserForm returnUserData={this._addUserData} />
+
+        <ListUsersData
+          usersData={this.state.userData}
+          deleteItem={this.deleteItem}
+        />
+
+        <div className="container">
+          {profiles.map(profile => (
+            <Profile {...profile} key={profile.id} />
+          ))}
+        </div>
       </div>
     );
   }
